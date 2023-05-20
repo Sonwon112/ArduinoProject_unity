@@ -9,12 +9,17 @@ public class CarMovement : MonoBehaviour
     string mdata = null;
     CarState carState = new CarState();
 
-    public float speed = 1f;
-    public float rotateAngle = 10f;
-    float maxAngle = 45f;
+    private float speed = 1f;
+    private float minSpeed = 0f;
+    private float maxSpeed = 0f;
+    private int movedDirection = 1;
 
-    public GameObject[] wheel;
+    public float rotationAngle = 0f;
+
+
+    public GameObject[] wheels;
     public GameObject[] rotatePoint;
+    public GameObject handle;
 
 
 
@@ -27,33 +32,71 @@ public class CarMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(carState.getIsStartUp){
-            float vertical = Input.GetAxis("Vertical");
-            float horizontal = Input.GetAxis("Horizontal");
-
-            // Debug.Log(rotateAngle);
-            this.transform.Translate(Vector3.forward*vertical*speed*Time.smoothDeltaTime);
-            if(horizontal < 0){
-                this.transform.Rotate(rotatePoint[0].transform.up,rotateAngle*vertical*horizontal*rotateAngle*Time.smoothDeltaTime);
-            }else if(horizontal > 0){
-                this.transform.Rotate(rotatePoint[1].transform.up,rotateAngle*vertical*horizontal*rotateAngle*Time.smoothDeltaTime);
+        if(carState.getIsStartUp()){
+            switch (carState.getGear())
+            {
+                case "C":
+                    setCarSpeed(0f, 20f, 1);
+                    break;
+                case "1":
+                    setCarSpeed(0f, 20f, 1);
+                    break;
+                case "2":
+                    setCarSpeed(20f, 40f, 1);
+                    break;
+                case "3":
+                    setCarSpeed(40f, 60f, 1);
+                    break;
+                case "4":
+                    setCarSpeed(60f, 80f, 1);
+                    break;
+                case "5":
+                    setCarSpeed(80f, 100f, 1);
+                    break;
+                case "R":
+                    setCarSpeed(0f, 20f, -1);
+                    break;
             }
+
+
+            if (carState.getIsAcceleration())
+            {
+                if (speed <= maxSpeed) speed += 0.1f;                
+            }else if (carState.getIsBreak())
+            {
+                if (speed >= minSpeed) speed -= 0.1f;
+            }
+            this.transform.Translate(this.transform.forward * speed * Time.smoothDeltaTime*movedDirection);
+
+            rotationAngle = carState.getHandleRotation();
+            handle.gameObject.transform.eulerAngles = new Vector3(rotationAngle, 0f, 0f);
+            for(int i = 0; i  < wheels.Length; i++)
+            {
+                wheels[i].gameObject.transform.eulerAngles = new Vector3(0f, rotationAngle/16, 0f);
+            }
+            int isMove = speed > 0f ? 1 : 0;
+            if (rotationAngle < 0f)
+            { 
+                this.transform.Rotate(rotatePoint[0].transform.up * rotationAngle / 16 * isMove* Time.smoothDeltaTime);
+            }
+            else
+            {
+                this.transform.Rotate(rotatePoint[1].transform.up * rotationAngle / 16 * isMove * Time.smoothDeltaTime);
+            }
+
         }
-        
-
-
-
-        
+         
         try{
             if(mPort.IsOpen){
                 mdata = mPort.ReadLine();
-                // Debug.Log(mdata);
-                string[] splitData = mdata.split(",");
+                Debug.Log(mdata);
+                // 0 : 기어 1 : 핸들 회전값 2 : 엑셀을 밟았는지 3 : 브레이크를 밟았는지 4 : 시동이 걸렸는지
+                string[] splitData = mdata.Split(",");
                 carState.setGear(splitData[0]);
-                carState.setHandleRotation(int.Parse(splitData[1]));
-                carState.setIsAcceleration(int.Parse(splitData[2]));
-                carState.setIsBreak(int.Parse(splitData[3]));
-                carState.setIsStartUp(int.Parse(splitData[4]));
+                carState.setHandleRotation(int.Parse(splitData[1])*-1);
+                carState.setIsAcceleration(splitData[2].Equals("0") ? false : true);
+                carState.setIsBreak(splitData[3].Equals("0") ? false : true);
+                carState.setIsStartUp(splitData[4].Equals("0") ?  false : true);
                 mPort.ReadTimeout = 30;
             }
         }catch(Exception e){
@@ -61,14 +104,26 @@ public class CarMovement : MonoBehaviour
         }
 
     }
+
+    void setCarSpeed(float minSpeed, float maxSpeed, int movedDirection)
+    {
+        this.minSpeed = minSpeed;
+        this.maxSpeed = maxSpeed;
+        this.movedDirection = movedDirection;
+    }
+
+    private void OnApplicationQuit()
+    {
+        mPort.Close();
+    }
 }
 
 class CarState{
     private string currGear = "C";
-    private int handleRotation = "0";
-    private boolean isAcceleration = false;
-    private boolean isBreak = false;
-    private boolean isStartUp = false;
+    private int handleRotation = 0;
+    private bool isAcceleration = false;
+    private bool isBreak = false;
+    private bool isStartUp = false;
 
     public void setGear(string gear){
         currGear = gear;
@@ -76,30 +131,30 @@ class CarState{
     public void setHandleRotation(int handleRotation){
         this.handleRotation = handleRotation;
     }
-    public void setIsAcceleration(boolean isAcceleration){
+    public void setIsAcceleration(bool isAcceleration){
         this.isAcceleration = isAcceleration;
     }
-    public void setIsBreak(boolean isBreak){
+    public void setIsBreak(bool isBreak){
         this.isBreak = isBreak;
     }
-    public void setIsStartUp(boolean isStartUp){
+    public void setIsStartUp(bool isStartUp){
         this.isStartUp = isStartUp;
     }
 
     public string getGear(){
-        retrun currGear;
+        return currGear;
     }
     public int getHandleRotation(){
-        retrun handleRotation;
+        return handleRotation;
     }
-    public boolean getIsAcceleration(){
-        retrun isAcceleration;
+    public bool getIsAcceleration(){
+        return isAcceleration;
     }
-    public boolean getIsBreak(){
-        retrun isBreak;
+    public bool getIsBreak(){
+        return isBreak;
     }
-    public boolean getIsStartUp(){
-        retrun isStartUp;
+    public bool getIsStartUp(){
+        return isStartUp;
     }
 
 }

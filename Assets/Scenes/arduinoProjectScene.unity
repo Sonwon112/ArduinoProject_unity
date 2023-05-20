@@ -161,14 +161,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6079c41a24241ba408e718d3e2a19ec6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  rotateAngle: 5
-  wheel:
-  - {fileID: 869166131}
-  - {fileID: 1807579413}
+  rotationAngle: 0
+  wheels: []
   rotatePoint:
   - {fileID: 1386878504}
   - {fileID: 151398713}
+  handle: {fileID: 891039260}
 --- !u!1 &151398713
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,6 +307,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5489733343411136782, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7066738055900061832, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -380,6 +382,10 @@ PrefabInstance:
     - target: {fileID: 7591319092751514162, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
       propertyPath: m_Name
       value: ZIL130_NoCover
+      objectReference: {fileID: 0}
+    - target: {fileID: 7703977069660545714, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7320778969028298619, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
@@ -468,9 +474,9 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!1 &869166131 stripped
+--- !u!1 &891039260 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 3379647798256003136, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4809623447086024627, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
   m_PrefabInstance: {fileID: 532146974}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &891461215
@@ -561,8 +567,3 @@ Transform:
   m_Father: {fileID: 13976041}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1807579413 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7419127574324464397, guid: caffda144e3c7d34d94adc25d7428e3f, type: 3}
-  m_PrefabInstance: {fileID: 532146974}
-  m_PrefabAsset: {fileID: 0}
