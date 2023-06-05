@@ -5,7 +5,7 @@ using UnityEngine;
 public class CarMovement : MonoBehaviour
 {
     // COM9로 연결되는 아두이노 보드 포스 설정    
-    SerialPort mPort = new SerialPort("COM9",9600);
+    SerialPort mPort = new SerialPort("COM5",9600);
     string mdata = null;
     CarState carState = new CarState();
 
@@ -35,7 +35,7 @@ public class CarMovement : MonoBehaviour
         if(carState.getIsStartUp()){
             switch (carState.getGear())
             {
-                case "C":
+                case "N":
                     setCarSpeed(0f, 20f, 1);
                     break;
                 case "1":
