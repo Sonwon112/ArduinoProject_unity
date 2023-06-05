@@ -21,12 +21,15 @@ public class CarMovement : MonoBehaviour
     public GameObject[] rotatePoint;
     public GameObject handle;
 
+    public float handleTest = 0f;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        mPort.Open();
+        //mPort.Open();
+        carState.setPrevtime(Time.time);
     }
 
     // Update is called once per frame
@@ -69,10 +72,10 @@ public class CarMovement : MonoBehaviour
             this.transform.Translate(this.transform.forward * speed * Time.smoothDeltaTime*movedDirection);
 
             rotationAngle = carState.getHandleRotation();
-            handle.gameObject.transform.eulerAngles = new Vector3(rotationAngle, 0f, 0f);
+            handle.gameObject.transform.localEulerAngles = new Vector3(rotationAngle, 0f, 0f);
             for(int i = 0; i  < wheels.Length; i++)
             {
-                wheels[i].gameObject.transform.eulerAngles = new Vector3(0f, rotationAngle/16, 0f);
+                wheels[i].gameObject.transform.localEulerAngles = new Vector3(0f, CarState.remap(rotationAngle,-900,900,-45,45), 0f);
             }
             int isMove = speed > 0f ? 1 : 0;
             if (rotationAngle < 0f)
@@ -86,22 +89,22 @@ public class CarMovement : MonoBehaviour
 
         }
          
-        try{
-            if(mPort.IsOpen){
-                mdata = mPort.ReadLine();
-                Debug.Log(mdata);
-                // 0 : 기어 1 : 핸들 회전값 2 : 엑셀을 밟았는지 3 : 브레이크를 밟았는지 4 : 시동이 걸렸는지
-                string[] splitData = mdata.Split(",");
-                carState.setGear(splitData[0]);
-                carState.setHandleRotation(int.Parse(splitData[1])*-1);
-                carState.setIsAcceleration(splitData[2].Equals("0") ? false : true);
-                carState.setIsBreak(splitData[3].Equals("0") ? false : true);
-                carState.setIsStartUp(splitData[4].Equals("0") ?  false : true);
-                mPort.ReadTimeout = 30;
-            }
-        }catch(Exception e){
-            Debug.Log(e);
-        }
+        //try{
+        //    if(mPort.IsOpen){
+        //        mdata = mPort.ReadLine();
+        //        Debug.Log(mdata);
+        //        // 0 : 기어 1 : 핸들 회전값 2 : 엑셀을 밟았는지 3 : 브레이크를 밟았는지 4 : 시동이 걸렸는지
+        //        string[] splitData = mdata.Split(",");
+        //        carState.setGear(splitData[0]);
+        //        carState.setHandleRotation(int.Parse(splitData[1])*-1);
+        //        carState.setIsAcceleration(splitData[2].Equals("0") ? true : false);
+        //        carState.setIsBreak(splitData[3].Equals("0") ? true : false);
+        //        carState.setIsStartUp(splitData[4].Equals("0") ?  true : false);
+        //        mPort.ReadTimeout = 30;
+        //    }
+        //}catch(Exception e){
+        //    Debug.Log(e);
+        //}
 
     }
 
@@ -120,16 +123,17 @@ public class CarMovement : MonoBehaviour
 
 class CarState{
     private string currGear = "C";
-    private int handleRotation = 0;
+    private float handleRotation = 0;
     private bool isAcceleration = false;
     private bool isBreak = false;
-    private bool isStartUp = false;
+    private bool isStartUp = true;
+    private float prevTime;
 
     public void setGear(string gear){
         currGear = gear;
     }
     public void setHandleRotation(int handleRotation){
-        this.handleRotation = handleRotation;
+        this.handleRotation = remap(handleRotation,-30f,30f,-900f,900f);
     }
     public void setIsAcceleration(bool isAcceleration){
         this.isAcceleration = isAcceleration;
@@ -138,13 +142,25 @@ class CarState{
         this.isBreak = isBreak;
     }
     public void setIsStartUp(bool isStartUp){
-        this.isStartUp = isStartUp;
+        float currTime = Time.time;
+        if(prevTime - currTime > 5)
+        {
+            if (isStartUp)
+            {
+                this.isStartUp = !this.isStartUp;
+                prevTime = currTime;
+            }
+        }
+    }
+    public void setPrevtime(float prevTime)
+    {
+        this.prevTime = prevTime;
     }
 
     public string getGear(){
         return currGear;
     }
-    public int getHandleRotation(){
+    public float getHandleRotation(){
         return handleRotation;
     }
     public bool getIsAcceleration(){
@@ -155,6 +171,10 @@ class CarState{
     }
     public bool getIsStartUp(){
         return isStartUp;
+    }
+    public static float remap(float val, float in1, float in2, float out1, float out2)  //리맵하는 함수
+    {
+        return out1 + (val - in1) * (out2 - out1) / (in2 - in1);
     }
 
 }
