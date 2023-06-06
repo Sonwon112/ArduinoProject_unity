@@ -27,6 +27,11 @@ public class CarMovement : MonoBehaviour
     public Text speedTxt;
     public Text gearTxt;
 
+    public bool testMode = false;
+    public float handleRotation = 0f;
+    public bool audioStart = false;
+
+    AudioSource carStartAudio;
     //public float handleTest = 0f;
 
 
@@ -36,84 +41,101 @@ public class CarMovement : MonoBehaviour
     {
         mPort.Open();
         carState.setPrevtime(Time.time);
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        speedTxt.text = "" + (int)speed;
-        gearTxt.text = carState.getGear();
-        HandleAngle.text = ""+carState.getHandleRotation();
-        if (carState.getIsStartUp()){
-            switch (carState.getGear())
-            {
-                case "N":
-                    setCarSpeed(0f, 8f, 1);
-                    break;
-                case "1":
-                    setCarSpeed(0f, 8f, 1);
-                    break;
-                case "2":
-                    setCarSpeed(0f, 16f, 1);
-                    break;
-                case "3":
-                    setCarSpeed(0f, 22f, 1);
-                    break;
-                case "4":
-                    setCarSpeed(0f, 28f, 1);
-                    break;
-                case "5":
-                    setCarSpeed(0f, 30f, 1);
-                    break;
-                case "R":
-                    setCarSpeed(0f, 8f, -1);
-                    break;
-            }
-
-
-            if (carState.getIsAcceleration())
-            {
-                if (speed <= maxSpeed) speed += 0.01f;                
-            }
-            if (carState.getIsBreak())
-            {
-                if (speed >= minSpeed) speed -= 0.01f;
-            }
-            this.transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime*movedDirection);
-
-            if(Math.Abs(rotationAngle-carState.getHandleRotation()) < 30)
-            {
-                rotationAngle = carState.getHandleRotation();
-            }
-            if(rotationAngle != handle.transform.localEulerAngles)
-            {
-                handle.transform.Rotate(handle.transform.up * 1 * Time.smoothDeltaTime);
-            }
-            //handle.gameObject.transform.localEulerAngles = new Vector3(rotationAngle, 0f, 0f);
-            for(int i = 0; i  < wheels.Length; i++)
-            {
-                wheels[i].gameObject.transform.localEulerAngles = new Vector3(0f, CarState.remap(rotationAngle,-900,900,-45,45), 0f);
-            }
-            int isMove = speed > 0f ? 1 : 0;
-            this.transform.Rotate(rotatePoint.transform.up * rotationAngle / 15 * isMove* Time.smoothDeltaTime);
-
+        if (Input.GetAxis("Replay")==1)
+        {
+            SceneManager.LoadScene(0);
         }
+        if (!testMode)
+        {
+            speedTxt.text = "" + (int)speed;
+            gearTxt.text = carState.getGear();
+            HandleAngle.text = "" + carState.getHandleRotation();
+            if (carState.getIsStartUp())
+            {
+                switch (carState.getGear())
+                {
+                    case "N":
+                        setCarSpeed(0f, 8f, 1);
+                        break;
+                    case "1":
+                        setCarSpeed(0f, 8f, 1);
+                        break;
+                    case "2":
+                        setCarSpeed(0f, 16f, 1);
+                        break;
+                    case "3":
+                        setCarSpeed(0f, 22f, 1);
+                        break;
+                    case "4":
+                        setCarSpeed(0f, 28f, 1);
+                        break;
+                    case "5":
+                        setCarSpeed(0f, 30f, 1);
+                        break;
+                    case "R":
+                        setCarSpeed(0f, 8f, -1);
+                        break;
+                }
 
-        try{
-            if(mPort.IsOpen){
-                mdata = mPort.ReadLine();
-                //Debug.Log(mdata);
-                // 0 : 기어 1 : 핸들 회전값 2 : 엑셀을 밟았는지 3 : 브레이크를 밟았는지 4 : 시동이 걸렸는지
-                string[] splitData = mdata.Split(",");
-                carState.setGear(splitData[0]);
-                carState.setHandleRotation(int.Parse(splitData[1])*-1);
-                carState.setIsAcceleration(splitData[4].Equals("0") ? true : false);
-                carState.setIsBreak(splitData[3].Equals("0") ? true : false);
-                carState.setIsStartUp(splitData[2].Equals("0") ?  true : false);
-                mPort.ReadTimeout = 30;
+
+                if (carState.getIsAcceleration())
+                {
+                    if (speed <= maxSpeed) speed += 0.01f;
+                }
+                if (carState.getIsBreak())
+                {
+                    if (speed >= minSpeed) speed -= 0.01f;
+                }
+                this.transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime * movedDirection);
+
+                rotationAngle = carState.getHandleRotation();
+
+                handle.gameObject.transform.localEulerAngles = new Vector3(Mathf.LerpAngle(handle.transform.localEulerAngles.x, handleRotation, 0.1f), 0, 0);
+                for (int i = 0; i < wheels.Length; i++)
+                {
+                    wheels[i].gameObject.transform.localEulerAngles = new Vector3(0f, CarState.remap(rotationAngle, -900, 900, -45, 45), 0f);
+                }
+                int isMove = speed > 0f ? 1 : 0;
+                this.transform.Rotate(rotatePoint.transform.up * rotationAngle / 15 * isMove * Time.smoothDeltaTime);
+
             }
-        }catch(Exception e){
-            //Debug.Log(e);
+
+            try
+            {
+                if (mPort.IsOpen)
+                {
+                    mdata = mPort.ReadLine();
+                    //Debug.Log(mdata);
+                    // 0 : 기어 1 : 핸들 회전값 2 : 엑셀을 밟았는지 3 : 브레이크를 밟았는지 4 : 시동이 걸렸는지
+                    string[] splitData = mdata.Split(",");
+                    carState.setGear(splitData[0]);
+                    carState.setHandleRotation(int.Parse(splitData[1]) * -1);
+                    carState.setIsAcceleration(splitData[4].Equals("0") ? true : false);
+                    carState.setIsBreak(splitData[3].Equals("0") ? true : false);
+                    carState.setIsStartUp(splitData[2].Equals("0") ? true : false);
+                    mPort.ReadTimeout = 30;
+                }
+            }
+            catch (Exception e)
+            {
+                //Debug.Log(e);
+            }
+        }
+        else
+        {
+            if (audioStart)
+            {
+                carStartAudio = this.GetComponent<AudioSource>();
+                carStartAudio.Play();
+            }
+                
+            handle.gameObject.transform.localEulerAngles = new Vector3(Mathf.LerpAngle(handle.transform.localEulerAngles.x, handleRotation, 0.1f), 0, 0);
         }
 
     }
