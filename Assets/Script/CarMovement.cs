@@ -29,7 +29,7 @@ public class CarMovement : MonoBehaviour
 
     public bool testMode = false;
     public float handleRotation = 0f;
-    public bool audioStart = false;
+    public bool audioStarted = false;
 
     AudioSource carStartAudio;
     //public float handleTest = 0f;
@@ -58,6 +58,12 @@ public class CarMovement : MonoBehaviour
             HandleAngle.text = "" + carState.getHandleRotation();
             if (carState.getIsStartUp())
             {
+                if (!audioStarted)
+                {
+                    carStartAudio = this.GetComponent<AudioSource>();
+                    carStartAudio.Play();
+                    audioStarted = true;
+                }
                 switch (carState.getGear())
                 {
                     case "N":
@@ -104,6 +110,10 @@ public class CarMovement : MonoBehaviour
                 int isMove = speed > 0f ? 1 : 0;
                 this.transform.Rotate(rotatePoint.transform.up * rotationAngle / 15 * isMove * Time.smoothDeltaTime);
 
+            }
+            else
+            {
+                audioStarted = false;
             }
 
             try
