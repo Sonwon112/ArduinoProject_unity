@@ -29,9 +29,11 @@ public class CarMovement : MonoBehaviour
 
     public bool testMode = false;
     public float handleRotation = 0f;
-    public bool audioStarted = false;
-
+    public bool sounPlay = false;
+    
+    bool audioStarted = false;
     AudioSource carStartAudio;
+    public AudioClip[] carSound;
     //public float handleTest = 0f;
 
 
@@ -58,8 +60,9 @@ public class CarMovement : MonoBehaviour
             if (carState.getIsStartUp())
             {
                 if (!audioStarted)
-                {
+                {   
                     carStartAudio = this.GetComponent<AudioSource>();
+                    carStartAudio.clip = carSound[0];
                     carStartAudio.Play();
                     audioStarted = true;
                 }
@@ -97,6 +100,22 @@ public class CarMovement : MonoBehaviour
                 {
                     if (speed >= minSpeed) speed -= 0.01f;
                 }
+                if(speed  > 5 && !carStartAudio.isPlaying)
+                {
+                    carStartAudio.volume = 1;
+                    carStartAudio.clip = carSound[1];
+                    carStartAudio.loop = true;
+                    carStartAudio.Play();
+                }
+                else if (speed == 0 )
+                {
+                    carStartAudio.Pause();
+                }
+                else
+                {   
+                    carStartAudio.volume = 0.5f;
+                }
+                
                 this.transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime * movedDirection);
 
                 rotationAngle = carState.getHandleRotation();
@@ -138,9 +157,11 @@ public class CarMovement : MonoBehaviour
         }
         else
         {
-            if (audioStarted)
-            {
+            if (sounPlay)
+            {   
                 carStartAudio = this.GetComponent<AudioSource>();
+                carStartAudio.clip = carSound[1];
+                carStartAudio.loop = true;
                 carStartAudio.Play();
             }
                 

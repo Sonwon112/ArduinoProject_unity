@@ -171,7 +171,10 @@ MonoBehaviour:
   gearTxt: {fileID: 1583938253}
   testMode: 0
   handleRotation: 0
-  audioStart: 0
+  sounPlay: 0
+  carSound:
+  - {fileID: 8300000, guid: c6b122a1bab34ff4396a0e719dbea1cc, type: 3}
+  - {fileID: 8300000, guid: 64ac278da276f3c428622d40a03c7f95, type: 3}
 --- !u!82 &13976046
 AudioSource:
   m_ObjectHideFlags: 0
