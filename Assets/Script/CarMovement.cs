@@ -41,7 +41,6 @@ public class CarMovement : MonoBehaviour
     {
         mPort.Open();
         carState.setPrevtime(Time.time);
-       
     }
 
     // Update is called once per frame
@@ -70,19 +69,19 @@ public class CarMovement : MonoBehaviour
                         setCarSpeed(0f, 8f, 1);
                         break;
                     case "1":
-                        setCarSpeed(0f, 8f, 1);
+                        setCarSpeed(0f, 10f, 1);
                         break;
                     case "2":
-                        setCarSpeed(0f, 16f, 1);
+                        setCarSpeed(0f, 20f, 1);
                         break;
                     case "3":
-                        setCarSpeed(0f, 22f, 1);
+                        setCarSpeed(0f, 30f, 1);
                         break;
                     case "4":
-                        setCarSpeed(0f, 28f, 1);
+                        setCarSpeed(0f, 40f, 1);
                         break;
                     case "5":
-                        setCarSpeed(0f, 30f, 1);
+                        setCarSpeed(0f, 50f, 1);
                         break;
                     case "R":
                         setCarSpeed(0f, 8f, -1);
@@ -102,7 +101,7 @@ public class CarMovement : MonoBehaviour
 
                 rotationAngle = carState.getHandleRotation();
 
-                handle.gameObject.transform.localEulerAngles = new Vector3(Mathf.LerpAngle(handle.transform.localEulerAngles.x, handleRotation, 0.1f), 0, 0);
+                handle.gameObject.transform.localEulerAngles = new Vector3(Mathf.LerpAngle(handle.transform.localEulerAngles.x, rotationAngle, 0.1f), 0, 0);
                 for (int i = 0; i < wheels.Length; i++)
                 {
                     wheels[i].gameObject.transform.localEulerAngles = new Vector3(0f, CarState.remap(rotationAngle, -900, 900, -45, 45), 0f);
@@ -139,7 +138,7 @@ public class CarMovement : MonoBehaviour
         }
         else
         {
-            if (audioStart)
+            if (audioStarted)
             {
                 carStartAudio = this.GetComponent<AudioSource>();
                 carStartAudio.Play();
