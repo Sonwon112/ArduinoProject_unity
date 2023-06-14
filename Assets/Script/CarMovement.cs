@@ -41,6 +41,7 @@ public class CarMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (mPort.IsOpen) mPort.Close();
         mPort.Open();
         carState.setPrevtime(Time.time);
     }
@@ -63,6 +64,7 @@ public class CarMovement : MonoBehaviour
                 {   
                     carStartAudio = this.GetComponent<AudioSource>();
                     carStartAudio.clip = carSound[0];
+                    carStartAudio.loop = false;
                     carStartAudio.Play();
                     audioStarted = true;
                 }
@@ -91,14 +93,14 @@ public class CarMovement : MonoBehaviour
                         break;
                 }
 
-
+                if (speed > maxSpeed) speed -= 0.1f;
                 if (carState.getIsAcceleration())
                 {
-                    if (speed <= maxSpeed) speed += 0.01f;
+                    if (speed <= maxSpeed) speed += 0.025f;
                 }
                 if (carState.getIsBreak())
                 {
-                    if (speed >= minSpeed) speed -= 0.01f;
+                    if (speed >= minSpeed) speed -= 0.1f;
                 }
                 if(speed  > 5 && !carStartAudio.isPlaying)
                 {
@@ -107,10 +109,6 @@ public class CarMovement : MonoBehaviour
                     carStartAudio.loop = true;
                     carStartAudio.Play();
                 }
-                else if (speed == 0 )
-                {
-                    carStartAudio.Pause();
-                }
                 else
                 {   
                     carStartAudio.volume = 0.5f;
@@ -118,7 +116,9 @@ public class CarMovement : MonoBehaviour
                 
                 this.transform.Translate(Vector3.forward * speed * Time.smoothDeltaTime * movedDirection);
 
-                rotationAngle = carState.getHandleRotation();
+                if (Math.Abs(rotationAngle - carState.getHandleRotation())<60) {
+                    rotationAngle = carState.getHandleRotation();
+                }
 
                 handle.gameObject.transform.localEulerAngles = new Vector3(Mathf.LerpAngle(handle.transform.localEulerAngles.x, rotationAngle, 0.1f), 0, 0);
                 for (int i = 0; i < wheels.Length; i++)
@@ -126,12 +126,14 @@ public class CarMovement : MonoBehaviour
                     wheels[i].gameObject.transform.localEulerAngles = new Vector3(0f, CarState.remap(rotationAngle, -900, 900, -45, 45), 0f);
                 }
                 int isMove = speed > 0f ? 1 : 0;
-                this.transform.Rotate(rotatePoint.transform.up * rotationAngle / 15 * isMove * Time.smoothDeltaTime);
+                this.transform.Rotate(rotatePoint.transform.up * rotationAngle / 15 * isMove * Time.smoothDeltaTime*movedDirection);
 
             }
             else
-            {
+            {   
                 audioStarted = false;
+                carStartAudio = GetComponent<AudioSource>();
+                carStartAudio.Stop();
             }
 
             try
