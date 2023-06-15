@@ -2,6 +2,8 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - CarMovement
+    - OpensSerialPort
+    - TextSelected
     Unity.InputSystem.dll:
     - UnityEngine.InputSystem.InputSettings
     - UnityEngine.InputSystem.InputSystemObject
@@ -14,6 +16,7 @@ ScriptsOnlyBuild:
     - TMPro.TMP_Settings
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
+    - TMPro.TextMeshProUGUI
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -21,9 +24,15 @@ ScriptsOnlyBuild:
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
     - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.Image
+    - UnityEngine.UI.Mask
+    - UnityEngine.UI.ScrollRect
+    - UnityEngine.UI.Scrollbar
     - UnityEngine.UI.Text
+    - UnityEngine.UI.VerticalLayoutGroup
   serializedClasses:
     Unity.TextMeshPro:
     - TMPro.FaceInfo_Legacy
@@ -39,16 +48,25 @@ ScriptsOnlyBuild:
     - TMPro.TMP_SpriteCharacter
     - TMPro.TMP_SpriteGlyph
     - TMPro.TMP_Style
+    - TMPro.VertexGradient
     UnityEngine.CoreModule:
     - UnityEngine.Events.PersistentCallGroup
+    - UnityEngine.RectOffset
     UnityEngine.TextCoreFontEngineModule:
     - UnityEngine.TextCore.FaceInfo
     - UnityEngine.TextCore.Glyph
     - UnityEngine.TextCore.GlyphMetrics
     - UnityEngine.TextCore.GlyphRect
     UnityEngine.UI:
+    - UnityEngine.UI.AnimationTriggers
+    - UnityEngine.UI.Button/ButtonClickedEvent
+    - UnityEngine.UI.ColorBlock
     - UnityEngine.UI.FontData
     - UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
+    - UnityEngine.UI.Navigation
+    - UnityEngine.UI.ScrollRect/ScrollRectEvent
+    - UnityEngine.UI.Scrollbar/ScrollEvent
+    - UnityEngine.UI.SpriteState
   methodsToPreserve: []
   sceneClasses:
     Assets/Scenes/arduinoProjectScene.unity:
@@ -91,27 +109,45 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
+      Script: {instanceID: 1592}
+    - Class: 114
       Script: {instanceID: 2218}
     - Class: 114
       Script: {instanceID: 2684}
     - Class: 114
       Script: {instanceID: 2894}
     - Class: 114
+      Script: {instanceID: 3198}
+    - Class: 114
       Script: {instanceID: 3454}
     - Class: 114
-      Script: {instanceID: 4196}
+      Script: {instanceID: 3712}
     - Class: 114
-      Script: {instanceID: 4310}
+      Script: {instanceID: 4046}
     - Class: 114
-      Script: {instanceID: 4584}
+      Script: {instanceID: 4198}
     - Class: 114
-      Script: {instanceID: 5344}
+      Script: {instanceID: 4312}
     - Class: 114
-      Script: {instanceID: 5612}
+      Script: {instanceID: 4586}
     - Class: 114
-      Script: {instanceID: 5932}
+      Script: {instanceID: 5346}
     - Class: 114
-      Script: {instanceID: 6442}
+      Script: {instanceID: 5614}
+    - Class: 114
+      Script: {instanceID: 5934}
+    - Class: 114
+      Script: {instanceID: 6098}
+    - Class: 114
+      Script: {instanceID: 6444}
+    - Class: 114
+      Script: {instanceID: 6454}
+    - Class: 114
+      Script: {instanceID: 6488}
+    - Class: 114
+      Script: {instanceID: 6900}
+    - Class: 114
+      Script: {instanceID: 7604}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -121,6 +157,8 @@ ScriptsOnlyBuild:
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
       Script: {instanceID: 0}
     - Class: 222
       Script: {instanceID: 0}
@@ -513,6 +551,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnCollisionExit2DMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 6d61a19811fa6cc66d27b6db27898351
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: OpensSerialPort
   - hash:
       serializedVersion: 2
       Hash: 2574ac7d50617d23cdefe4ad22f5e1ad
@@ -965,6 +1009,12 @@ ScriptsOnlyBuild:
     className: MarkerTrack
   - hash:
       serializedVersion: 2
+      Hash: c9615e6943b4dcf8df725c23dae04c68
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TextSelected
+  - hash:
+      serializedVersion: 2
       Hash: 8e6ceabfd38a184413d69b7db56c89cc
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools
@@ -1290,4 +1340,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/arduinoProjectScene.unity
-  playerPath: C:/unityWorkspace/ArduinoUnity_Build/ArduinoProject.exe
+  playerPath: C:/unityWorkspace/ArduinoProject_Build/ArduinoProject.exe

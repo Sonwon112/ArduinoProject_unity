@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
 using UnityEngine.UI;
-using UnityEditor.Experimental.GraphView;
+//using UnityEditor.Experimental;
 using UnityEditor;
 
 public class OpensSerialPort : MonoBehaviour
@@ -64,7 +64,7 @@ public class OpensSerialPort : MonoBehaviour
         }
         else
         {
-            EditorUtility.DisplayDialog("", "포트를 선택하세요", "OK");
+            //bool result = EditorUtility.DisplayDialog("", "포트를 선택하세요", "OK");
 
         }
     }

@@ -191,7 +191,7 @@ public class CarMovement : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        mPort.Close();
+        if(mPort != null)mPort.Close();
     }
 }
 

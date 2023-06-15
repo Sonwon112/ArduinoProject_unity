@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TextSelected : MonoBehaviour
 {
@@ -16,11 +17,12 @@ public class TextSelected : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(EventSystem.current.IsPointerOverGameObject() == false)
+        if(EventSystem.current.IsPointerOverGameObject() != false)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 portConnectManager.GetComponent<OpensSerialPort>().selectedIndex = index;
+                this.GetComponent<Text>().text = "o" + this.GetComponent<Text>().text;
             }
         }
     }
